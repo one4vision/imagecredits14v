@@ -12,18 +12,18 @@
 
 $EM_CONF[$_EXTKEY] = [
     'title' => 'ImageCredits14v',
-    'description' => 'Erstellt eine Liste mit Dateien im System in gibt deren MetaDaten aus.',
+    'description' => 'Provides an overview of all used images with copyright information in the frontend and a backend module for managing copyright details.',
     'category' => 'plugin',
     'author' => 'Oliver Busch',
     'author_email' => 'ob@14v.de',
     'author_company' => 'one4vision GmbH',
     'clearCacheOnLoad' => true,
     'state' => 'stable',
-    'version' => '12.3.0',
+    'version' => '12.3.1',
     'constraints' => [
         'depends' => [
-            'typo3' => '12.4.0-',
-            'filemetadata' => '12.4.0-'
+            'typo3' => '12.4.0-12.4.99',
+            'filemetadata' => '12.4.0-12.4.99'
         ],
         'conflicts' => [],
         'suggests' => [],
