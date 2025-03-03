@@ -50,7 +50,7 @@
                 <f:for each="{images}" as="image">
                     <tr role="row">
                         <td style="vertical-align: top; text-align: center">
-                            <a class="btn btn-default" onclick="top.TYPO3.InfoWindow.showItem('_FILE', '{image.file.uid}'); return false;"><core:icon identifier="actions-eye" size="small" /></a>
+                            <a class="btn btn-default ic-file-details" data-file-uid="{image.file.uid}"><core:icon identifier="actions-eye" size="small" /></a>
                         </td>
                         <td>
                             <span style="color: #999999"><em>{image.file.folder}</em></span><br />
@@ -109,8 +109,18 @@
         </f:else>
     </f:if>
 
-    <f:asset.script identifier="imageCreditsBeTableSorter">
+    <f:asset.script identifier="imageCreditsBeTableSorter" nonce="{f:security.nonce()}">
         document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".ic-file-details").forEach(function (link) {
+                link.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const fileUid = this.getAttribute("data-file-uid");
+                    if (fileUid) {
+                        top.TYPO3.InfoWindow.showItem('_FILE', fileUid);
+                    }
+                });
+            });
+
             const table = document.querySelector(".table-sortable");
             const headers = table.querySelectorAll("th[data-sortable='true']");
 
