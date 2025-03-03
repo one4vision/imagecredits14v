@@ -1,0 +1,34 @@
+{
+    "name": "one4vision/imagecredits14v",
+    "type": "typo3-cms-extension",
+    "description": "Provides an overview of all used images with copyright information in the frontend and a backend module for managing copyright details.",
+    "license": "GPL-2.0-or-later",
+    "keywords": ["TYPO3 CMS", "Images", "License", "Copyright"],
+    "authors": [
+        {
+            "name": "Oliver Busch",
+            "email": "dev@one4vision.de",
+            "role": "Developer",
+            "homepage": "https://www.one4vision.de"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/one4vision/imagecredits14v/issues",
+        "source": "https://github.com/one4vision/imagecredits14v.git"
+    },
+    "require": {
+        "typo3/cms-core": "~12.4.0",
+        "typo3/cms-filemetadata": "~12.4.0",
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Extension14v\\Imagecredits14v\\": "Classes/"
+        }
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "imagecredits14v"
+        }
+    }
+}

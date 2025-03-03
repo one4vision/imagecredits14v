@@ -1,0 +1,39 @@
+<html xmlns:f="https://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<nav>
+    <ul class="pagination justify-content-end">
+        <f:for each="{pagination}" as="paginator">
+
+            <f:if condition="{paginator.class}">
+                <f:then>
+                    <f:if condition="{paginator.class} == 'active'">
+                        <li class="page-item active">
+                            <span>{paginator.value}</span>
+                        </li>
+                    </f:if>
+                    <f:if condition="{paginator.class} == 'first'">
+                        <li class="page-item">
+                            <f:link.action action="list" class="page-link" arguments="{page: paginator.value}">
+                                <span>&laquo;</span>
+                            </f:link.action>
+                        </li>
+                    </f:if>
+                    <f:if condition="{paginator.class} == 'last'">
+                        <li class="page-item">
+                            <f:link.action action="list" class="page-link" arguments="{page: paginator.value}">
+                                <span>&raquo;</span>
+                            </f:link.action>
+                        </li>
+                    </f:if>
+                </f:then>
+                <f:else>
+                    <li class="page-item">
+                        <f:link.action action="list" class="page-link" arguments="{page: paginator.value}">
+                            <span>{paginator.value}</span>
+                        </f:link.action>
+                    </li>
+                </f:else>
+            </f:if>
+        </f:for>
+    </ul>
+</nav>
+</html>

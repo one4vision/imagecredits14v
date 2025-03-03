@@ -1,0 +1,35 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+<f:layout name="Module" />
+
+<f:section name="Content">
+   <h1><f:translate extensionName="imagecredits14v" key="tx_imagecredits14v.backend.licence.title" /></h1>
+
+   <div class="mb-3"><a href="{addLink}" class="btn btn-primary"><f:translate extensionName="imagecredits14v" key="tx_imagecredits14v.backend.licence.newLicence" /></a> </div>
+
+   <table class="table table-bordered table-hover">
+      <thead>
+      <tr>
+         <th style="width: 50px;">UID</th>
+         <th><f:translate extensionName="imagecredits14v" key="tx_imagecredits14v_domain_model_licences.name" /></th>
+         <th><f:translate extensionName="imagecredits14v" key="tx_imagecredits14v_domain_model_licences.licence_name" /></th>
+         <th><f:translate extensionName="imagecredits14v" key="tx_imagecredits14v_domain_model_licences.licence_url" /></th>
+         <th style="width: 30px;"> </th>
+      </tr>
+      </thead>
+      <tbody>
+      <f:for each="{licences}" as="licence" iteration="i">
+         <tr>
+            <td>{licence.uid}</td>
+            <td>{licence.name}</td>
+            <td>{licence.licenceName}</td>
+            <td>{licence.licenceUrl}</td>
+            <td><a href="{licence.editLink}" class="btn btn-default"><core:icon identifier="actions-file-edit" size="small" /></a></td>
+         </tr>
+      </f:for>
+      </tbody>
+   </table>
+</f:section>
+</html>

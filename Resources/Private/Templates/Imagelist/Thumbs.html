@@ -1,0 +1,271 @@
+<html xmlns:f="https://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Default"/>
+
+<f:section name="content">
+    <f:asset.css identifier="imageCreditsEditor" href="EXT:imagecredits14v/Resources/Public/Css/ImageCredits14v.css"/>
+
+    <h3>Verwendete Bilder</h3>
+    <f:for each="{images}" as="image">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2">
+                    <a href="{f:uri.image(image: image.fileObjects.0)}" target="_blank">
+                        <f:image image="{image.fileObjects.0}" loading="lazy" class="img-fluid"
+                                 style="width:100%; height:auto"/>
+                    </a>
+                </div>
+                <div class="col-lg-10">
+                    <table class="table table-sm table-bordered table-hover table-striped">
+                        <tbody>
+                        <tr>
+                            <th style="width: 200px" nowrap="nowrap">Dateiname</th>
+                            <td>{image.fileObjects.0.name} <em>({image.fileObjects.0.properties.mime_type})</em></td>
+                        </tr>
+                        <f:if condition="{image.file.metadata.title}">
+                            <tr>
+                                <th style="width: 200px" nowrap="nowrap">Bezeichnung</th>
+                                <td>{image.file.metadata.title}</td>
+                            </tr>
+                        </f:if>
+                        <f:if condition="{image.file.metadata.description}">
+                            <tr>
+                                <th style="width: 200px" nowrap="nowrap">Beschreibung</th>
+                                <td>
+                                    <f:format.nl2br>{image.file.metadata.description}</f:format.nl2br>
+                                </td>
+                            </tr>
+                        </f:if>
+                        <f:if condition="{image.file.metadata.keywords}">
+                            <tr>
+                                <th style="width: 200px" nowrap="nowrap">Keywords</th>
+                                <td><p class="text-break mb-0">{image.file.metadata.keywords}</p></td>
+                            </tr>
+                        </f:if>
+                        <f:if condition="{image.file.metadata.creator}">
+                            <tr>
+                                <th style="width: 200px" nowrap="nowrap">Ersteller</th>
+                                <td>{image.file.metadata.creator}</td>
+                            </tr>
+                        </f:if>
+                        <f:if condition="{image.file.metadata.creator_tool}">
+                            <tr>
+                                <th style="width: 200px" nowrap="nowrap">Software</th>
+                                <td>{image.file.metadata.creator_tool}</td>
+                            </tr>
+                        </f:if>
+                        <f:if condition="{image.file.metadata.publisher}">
+                            <tr>
+                                <th style="width: 200px" nowrap="nowrap">Veröffentlicher</th>
+                                <td>{image.file.metadata.publisher}</td>
+                            </tr>
+                        </f:if>
+                        <f:if condition="{image.file.metadata.source}">
+                            <tr>
+                                <th style="width: 200px" nowrap="nowrap">Quellenangabe</th>
+                                <td>{image.file.metadata.source}</td>
+                            </tr>
+                        </f:if>
+
+                        <f:if condition="{beUser}">
+                            <f:then>
+                                <tr>
+                                    <th style="width: 200px" nowrap="nowrap">Copyright-Informationen</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <f:form.textarea class="form-control controlClass"
+                                                             placeholder="-- nicht angegeben --"
+                                                             id="f4_{image.file.metadata.uid}"
+                                                             value="{image.file.metadata.copyright}"
+                                                             data="{field: 'copyright'}"/>
+                                            <button id="b4_{image.file.metadata.uid}" data-checker="false"
+                                                    data-field="4" data-meta="{image.file.metadata.uid}" data-ext=""
+                                                    class="btn btn-primary controlButton" type="button">
+                                                <f:render section="save_icon"/>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </f:then>
+                            <f:else>
+                                <f:if condition="{image.file.metadata.copyright}">
+                                    <f:render section="output"
+                                              arguments="{label: 'Copyright-Informationen', value: image.file.metadata.copyright}"/>
+                                </f:if>
+                            </f:else>
+                        </f:if>
+                        <f:if condition="{beUser}">
+                            <f:then>
+                                <tr>
+                                    <th style="width: 200px" nowrap="nowrap">Alternativer Text</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <f:form.textfield class="form-control controlClass"
+                                                              placeholder="-- nicht angegeben --"
+                                                              id="f1_{image.file.metadata.uid}"
+                                                              value="{image.file.metadata.alternative}"
+                                                              data="{field: 'alternative'}"/>
+                                            <button id="b1_{image.file.metadata.uid}" data-checker="false"
+                                                    data-field="1" data-meta="{image.file.metadata.uid}" data-ext=""
+                                                    class="btn btn-primary controlButton" type="button">
+                                                <f:render section="save_icon"/>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </f:then>
+                            <f:else>
+                                <f:if condition="{image.file.metadata.alternative}">
+                                    <f:render section="output"
+                                              arguments="{label: 'Alternativer Text', value: image.file.metadata.alternative}"/>
+                                </f:if>
+                            </f:else>
+                        </f:if>
+                        <f:if condition="{beUser}">
+                            <f:then>
+                                <tr>
+                                    <th style="width: 200px" nowrap="nowrap">Bildbeschriftung</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <f:form.textfield class="form-control controlClass"
+                                                              placeholder="-- nicht angegeben --"
+                                                              id="f2_{image.file.metadata.uid}"
+                                                              value="{image.file.metadata.caption}"
+                                                              data="{field: 'caption'}"/>
+                                            <button id="b2_{image.file.metadata.uid}" data-checker="false"
+                                                    data-field="2" data-meta="{image.file.metadata.uid}" data-ext=""
+                                                    class="btn btn-primary controlButton" type="button">
+                                                <f:render section="save_icon"/>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </f:then>
+                            <f:else>
+                                <f:if condition="{image.file.metadata.caption}">
+                                    <f:render section="output"
+                                              arguments="{label: 'Bildbeschriftung', value: image.file.metadata.caption}"/>
+                                </f:if>
+                            </f:else>
+                        </f:if>
+                        <f:if condition="{beUser}">
+                            <f:then>
+                                <tr>
+                                    <th style="width: 200px" nowrap="nowrap">Download Name</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <f:form.textfield class="form-control controlClass"
+                                                              placeholder="-- nicht angegeben --"
+                                                              id="f3_{image.file.metadata.uid}"
+                                                              value="{image.file.metadata.download_name}"
+                                                              data="{field: 'download_name'}"/>
+                                            <button id="b3_{image.file.metadata.uid}" data-checker="true" data-field="3"
+                                                    data-meta="{image.file.metadata.uid}"
+                                                    data-ext="{image.fileObjects.0.properties.extension}"
+                                                    class="btn btn-primary controlButton" type="button">
+                                                <f:render section="save_icon"/>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </f:then>
+                            <f:else>
+                                <f:if condition="{image.file.metadata.download_name}">
+                                    <f:render section="output"
+                                              arguments="{label: 'Download Name', value: image.file.metadata.download_name}"/>
+                                </f:if>
+                            </f:else>
+                        </f:if>
+                        <f:if condition="{image.file.metadata.tx_imagecredits14v_name} || {image.file.tx_imagecredits14v_link}">
+                            <f:render section="urheber" arguments="{image:image}"/>
+                        </f:if>
+                        <f:if condition="{image.file.metadata.location_country} || {image.file.metadata.location_region} || {image.file.metadata.location_city}">
+                            <f:render section="geografischerStandort" arguments="{image:image}"/>
+                        </f:if>
+
+                        <f:if condition="{image.file.metadata.latitude} > 0 || {image.file.metadata.longitude} > 0">
+                            <f:render section="gps" arguments="{image:image}"/>
+                        </f:if>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <hr/>
+    </f:for>
+</f:section>
+
+<f:section name="urheber">
+    <tr>
+        <td colspan="2"><em>Urheber-Informationen</em></td>
+    </tr>
+    <f:if condition="{image.file.metadata.tx_imagecredits14v_name}">
+        <tr>
+            <th style="width: 200px" nowrap="nowrap">Urheber / Fotograf</th>
+            <td>{image.file.metadata.tx_imagecredits14v_name}</td>
+        </tr>
+    </f:if>
+    <f:if condition="{image.file.metadata.tx_imagecredits14v_link}">
+        <tr>
+            <th style="width: 200px" nowrap="nowrap">Webseite</th>
+            <td>
+                <f:link.external uri="{image.file.metadata.tx_imagecredits14v_link}" target="_blank">
+                    {image.file.metadata.tx_imagecredits14v_link}
+                </f:link.external>
+            </td>
+        </tr>
+    </f:if>
+</f:section>
+
+<f:section name="geografischerStandort">
+    <tr>
+        <td colspan="2"><em>Geografischer Standort</em></td>
+    </tr>
+    <f:if condition="{image.file.metadata.location_country}">
+        <tr>
+            <th style="width: 200px" nowrap="nowrap">Land</th>
+            <td>{image.file.metadata.location_country}</td>
+        </tr>
+    </f:if>
+    <f:if condition="{image.file.metadata.location_region}">
+        <tr>
+            <th style="width: 200px" nowrap="nowrap">Region</th>
+            <td>{image.file.metadata.location_region}</td>
+        </tr>
+    </f:if>
+    <f:if condition="{image.file.metadata.location_city}">
+        <tr>
+            <th style="width: 200px" nowrap="nowrap">Stadt</th>
+            <td>{image.file.metadata.location_city}</td>
+        </tr>
+    </f:if>
+</f:section>
+
+<f:section name="gps">
+    <tr>
+        <td colspan="2"><em>GPS Daten</em></td>
+    </tr>
+    <f:if condition="{image.file.metadata.latitude}">
+        <tr>
+            <th style="width: 200px" nowrap="nowrap">Breitengrad</th>
+            <td>{image.file.metadata.latitude}</td>
+        </tr>
+    </f:if>
+    <f:if condition="{image.file.metadata.longitude}">
+        <tr>
+            <th style="width: 200px" nowrap="nowrap">Längengrad</th>
+            <td>{image.file.metadata.longitude}</td>
+        </tr>
+    </f:if>
+</f:section>
+
+<f:section name="output">
+    <tr>
+        <th style="width: 200px" nowrap="nowrap">{label}</th>
+        <td>{value}</td>
+    </tr>
+</f:section>
+
+<f:section name="save_icon">
+    <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 16 16" style="width:16px; height:16px;"><g fill="currentColor"><path d="M10.7 1H1.5c-.3 0-.5.2-.5.5v13c0 .3.2.5.5.5h13c.3 0 .5-.2.5-.5V5.4c0-.5-.2-1-.6-1.4L12 1.6c-.3-.4-.8-.6-1.3-.6zM7.3 2h1.5c.1 0 .2.1.2.3v2.5c0 .1-.1.2-.2.2H7.3c-.2 0-.3-.1-.3-.2V2.3c0-.2.1-.3.3-.3zM11 14H5v-3.8c0-.1.1-.2.3-.2h5.5c.1 0 .3.1.3.3V14H11zm3 0h-2V9.5c0-.3-.2-.5-.5-.5h-7c-.3 0-.5.2-.5.5V14H2V2h2v3.5c0 .3.2.5.5.5h5c.3 0 .5-.2.5-.5V2h.8c.3 0 .5.1.7.3l1.9 2c.4.4.6.9.6 1.4V14z"/></g></svg>
+</f:section>
+</html>

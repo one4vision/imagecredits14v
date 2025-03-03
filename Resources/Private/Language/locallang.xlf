@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns:t3="http://typo3.org/schemas/xliff" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" original="messages" datatype="plaintext" product-name="imagecredits14v" date="2023-10-23T07:52:54+02:00">
+		<header />
+		<body>
+			<trans-unit id="tx_imagecredits14v_imglist.name" resname="tx_imagecredits14v_imglist.name">
+				<source>Urheber-Informationen14v</source>
+			</trans-unit>
+			<trans-unit id="tx_imagecredits14v_imglist.description" resname="tx_imagecredits14v_imglist.description">
+				<source>Erstellt eine Liste mit Bildern und Angaben zu deren Urhebern</source>
+			</trans-unit>
+			<trans-unit id="tx_imagecredits14v_name" resname="tx_imagecredits14v_name">
+				<source>Name des Urhebers bzw. Fotografs</source>
+			</trans-unit>
+			<trans-unit id="tx_imagecredits14v_link" resname="tx_imagecredits14v_link">
+				<source>Webseite des Urhebers bzw. Fotografs</source>
+			</trans-unit>
+			<trans-unit id="tx_imagecredits14v_exlist" resname="tx_imagecredits14v_exlist">
+				<source>Aus Liste ausschließen?</source>
+			</trans-unit>
+			<trans-unit id="tx_imagecredits14v_term" resname="tx_imagecredits14v_term">
+				<source>Lizenz</source>
+			</trans-unit>
+			<trans-unit id="tx_imagecredits14v_domain_model_licences.name" resname="tx_imagecredits14v_domain_model_licences.name">
+				<source>Bezeichnung</source>
+			</trans-unit>
+			<trans-unit id="tx_imagecredits14v_domain_model_licences.licence_name" resname="tx_imagecredits14v_domain_model_licences.licence_name">
+				<source>Lizenz-Name</source>
+			</trans-unit>
+			<trans-unit id="tx_imagecredits14v_domain_model_licences.licence_url" resname="tx_imagecredits14v_domain_model_licences.licence_url">
+				<source>Lizenz-URL</source>
+			</trans-unit>
+
+			<trans-unit id="tx_imagecredits14v.backend.licence.title" resname="tx_imagecredits14v.backend.licence.title">
+				<source>Bild-Lizenzen verwalten</source>
+			</trans-unit>
+			<trans-unit id="tx_imagecredits14v.backend.licence.newLicence" resname="tx_imagecredits14v.backend.licence.newLicence">
+				<source>neue Lizenz eintragen</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,71 @@
+<T3DataStructure>
+    <sheets>
+        <sDEF>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Allgemeine Einstellungen</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.currentPage>
+                        <TCEforms>
+                            <label>Nur aktuelle Seite (ohne Unterseiten)</label>
+                            <config>
+                                <type>check</type>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </settings.currentPage>
+                    <settings.extensions>
+                        <TCEforms>
+                            <label>Referenzen aus Erweiterungen anzeigen</label>
+                            <description>tt_content und pages werden automatisch ausgelesen.</description>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectCheckBox</renderType>
+                                <itemsProcFunc>Extension14v\Imagecredits14v\Utility\ForeignContentReferences->getForeignContents</itemsProcFunc>
+                                <maxitems>9999</maxitems>
+                                <size>5</size>
+                                <multiple>1</multiple>
+                            </config>
+                        </TCEforms>
+                    </settings.extensions>
+                    <settings.showImages>
+                        <TCEforms>
+                            <label>Bilder in Liste anzeigen</label>
+                            <config>
+                                <type>check</type>
+                                <default>1</default>
+                            </config>
+                        </TCEforms>
+                    </settings.showImages>
+                    <settings.directories>
+                        <TCEforms>
+                            <label>Nur Dateien aus folgenden Verzeichnissen anzeigen</label>
+                            <description>inkl. Unterverzeichnissen</description>
+                            <config>
+                                <type>folder</type>
+                                <size>5</size>
+                                <maxitems>999</maxitems>
+                                <minitems>0</minitems>
+                            </config>
+                        </TCEforms>
+                    </settings.directories>
+                    <settings.ignore>
+                        <TCEforms>
+                            <label>Referenzen auf folgenden Seiten ignorieren</label>
+                            <description>inkl. Unterseiten</description>
+                            <config>
+                                <type>group</type>
+                                <allowed>pages</allowed>
+                                <size>5</size>
+                                <maxitems>999</maxitems>
+                                <minitems>0</minitems>
+                            </config>
+                        </TCEforms>
+                    </settings.ignore>
+                </el>
+            </ROOT>
+        </sDEF>
+    </sheets>
+</T3DataStructure>

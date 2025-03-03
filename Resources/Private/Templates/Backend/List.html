@@ -1,0 +1,164 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+<f:layout name="Module" />
+
+<f:section name="Content">
+    <f:asset.css identifier="ImageCreditsBackendCss">
+        th {
+            cursor: pointer;
+            position: relative;
+            padding-right: 20px;
+        }
+        .sort-icon {
+
+        }
+    </f:asset.css>
+   <h1>Übersicht aller Dateien (mit Referenzangaben)</h1>
+   <h2>{pageTitle} [{pageUid}] und untergeordnete Seiten</h2>
+
+    <div class="row">
+        <f:form>
+            <div class="col-3">
+                <div class="input-group mb-3">
+                    <f:form.select class="form-control" name="contentType" options="{contentTypeList}" value="{contentType}" />
+                    <f:form.button class="btn btn-primary" name="sendBtn" value="true">filtern</f:form.button>
+                </div>
+            </div>
+        </f:form>
+    </div>
+
+    <f:if condition="{isPage}">
+        <f:then>
+            <table class="table table-condensed table-striped table-bordered table-hover table-sortable">
+                <thead>
+                <tr>
+                    <th style="width:30px" role="columnheader"> </th>
+                    <th role="columnheader" data-sortable="true">Dateiname <i class="sort-icon"> ⇵</i></th>
+                    <th style="width: 90px" data-sortable="true" role="columnheader">Dateigröße <i class="sort-icon"> ⇵</i></th>
+                    <th style="width: 100px; text-align: center" role="columnheader">zuletzt<br />bearbeitet</th>
+                    <th title="Anzahl Referenzen" style="width: 50px; cursor: help; text-align: center;" role="columnheader">Ref.</th>
+                    <th style="width: 120px;" data-sortable="true" role="columnheader">Lizenz <i class="sort-icon"> ⇵</i></th>
+                    <th style="width: 120px;" data-sortable="true" role="columnheader">Urheber-Name <i class="sort-icon"> ⇵</i></th>
+                    <th style="width: 150px;" data-sortable="true" role="columnheader">Urheber-URL <i class="sort-icon"> ⇵</i></th>
+                    <th style="width: 120px;" data-sortable="true" role="columnheader">Titel <i class="sort-icon"> ⇵</i></th>
+                    <th style="width:30px" role="columnheader"> </th>
+                </tr>
+                </thead>
+                <tbody>
+                <f:for each="{images}" as="image">
+                    <tr role="row">
+                        <td style="vertical-align: top; text-align: center">
+                            <a class="btn btn-default" onclick="top.TYPO3.InfoWindow.showItem('_FILE', '{image.file.uid}'); return false;"><core:icon identifier="actions-eye" size="small" /></a>
+                        </td>
+                        <td>
+                            <span style="color: #999999"><em>{image.file.folder}</em></span><br />
+                            <f:if condition="{image.file.strippedName}">
+                                <f:then><span title="{image.file.name}" style="cursor: help">{image.file.strippedName}</span> </f:then>
+                                <f:else>{image.file.name}</f:else>
+                            </f:if>
+
+                        </td>
+                        <td style="text-align: right">{image.file.size -> f:format.bytes(decimals: 2, decimalSeparator:',', thousandsSeparator: '.')}</td>
+                        <td style="text-align: center"><f:format.date format="d.m.Y / H:i">{image.file.modified}</f:format.date></td>
+                        <td style="text-align: center;">{image.references -> f:count()}</td>
+                        <td>
+                            <f:if condition="{image.file.licence}">
+                                <f:then>
+                                    <f:if condition="{image.file.licence.licenceUrl}">
+                                        <f:then><a href="{image.file.licence.licenceUrl}" target="_blank">{image.file.licence.licenceName}</a></f:then>
+                                        <f:else>{image.file.licence.licenceName}</f:else>
+                                    </f:if>
+                                </f:then>
+                                <f:else><span style="color: #999999"><em>-- n/a --</em></span></f:else>
+                            </f:if>
+                        </td>
+                        <td>
+                            <f:if condition="{image.file.metadata.tx_imagecredits14v_name}">
+                                <f:then>{image.file.metadata.tx_imagecredits14v_name}</f:then>
+                                <f:else><span style="color: #999999"><em>-- n/a --</em></span></f:else>
+                            </f:if>
+                        </td>
+                        <td>
+                            <f:if condition="{image.file.metadata.tx_imagecredits14v_link}">
+                                <f:then>{image.file.metadata.tx_imagecredits14v_link}</f:then>
+                                <f:else><span style="color: #999999"><em>-- n/a --</em></span></f:else>
+                            </f:if>
+                        </td>
+                        <td>
+                            <f:if condition="{image.file.metadata.title}">
+                                <f:then>{image.file.metadata.title}</f:then>
+                                <f:else><span style="color: #999999"><em>-- n/a --</em></span></f:else>
+                            </f:if>
+                        </td>
+                        <td style="vertical-align: top; text-align: center">
+                            <a href="{image.edit}" class="btn btn-default" title="Meta-Informationen bearbeiten">
+                                <core:icon identifier="actions-file-edit" size="small" />
+                            </a>
+                        </td>
+                    </tr>
+                </f:for>
+                </tbody>
+            </table>
+        </f:then>
+        <f:else>
+            <div class="alert alert-info">
+                Bitte eine Seite aus dem Seitenbaum wählen
+            </div>
+        </f:else>
+    </f:if>
+
+    <f:asset.script identifier="imageCreditsBeTableSorter">
+        document.addEventListener("DOMContentLoaded", function () {
+            const table = document.querySelector(".table-sortable");
+            const headers = table.querySelectorAll("th[data-sortable='true']");
+
+            headers.forEach(header => {
+                header.addEventListener("click", function () {
+                    const tableBody = table.querySelector("tbody");
+                    const rows = Array.from(tableBody.querySelectorAll("tr"));
+                    const index = Array.from(header.parentNode.children).indexOf(header);
+                    const isAscending = header.dataset.order !== "asc";
+                    header.dataset.order = isAscending ? "asc" : "desc";
+
+                    // Setzt alle Icons zurück
+                    headers.forEach(h => h.querySelector(".sort-icon").textContent = " ⇵");
+                    const icon = header.querySelector(".sort-icon");
+                    icon.textContent = isAscending ? " ↑" : " ↓";
+
+                    rows.sort((rowA, rowB) => {
+                        let cellA = rowA.cells[index].textContent.trim();
+                        let cellB = rowB.cells[index].textContent.trim();
+
+                        if (header.textContent.includes("Dateigröße")) {
+                            // Dateigröße numerisch sortieren
+                            cellA = parseSize(cellA);
+                            cellB = parseSize(cellB);
+                        } else if (!isNaN(cellA) && !isNaN(cellB)) {
+                            // Zahlen direkt als Float vergleichen
+                            cellA = parseFloat(cellA);
+                            cellB = parseFloat(cellB);
+                        } else {
+                            // Case-insensitive Sortierung für Text
+                            cellA = cellA.toLowerCase();
+                            cellB = cellB.toLowerCase();
+                        }
+
+                        return isAscending ? (cellA > cellB ? 1 : -1) : (cellA < cellB ? 1 : -1);
+                    });
+
+                    rows.forEach(row => tableBody.appendChild(row));
+                });
+            });
+
+            function parseSize(sizeStr) {
+                let num = parseFloat(sizeStr.replace(",", "."));
+                if (sizeStr.includes("KB")) return num * 1000;
+                if (sizeStr.includes("MB")) return num * 1000000;
+                return num;
+            }
+        });
+    </f:asset.script>
+</f:section>
+</html>

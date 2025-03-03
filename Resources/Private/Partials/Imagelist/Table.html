@@ -1,0 +1,68 @@
+<html xmlns:f="https://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Datei-Name</th>
+        <th>Informationen</th>
+        <th>wird verwendet unter</th>
+    </tr>
+    </thead>
+    <tbody>
+    <f:for each="{images}" as="image" iteration="i">
+        <tr>
+            <td>{i.cycle}.</td>
+            <td><a href="{f:uri.image(image: image.fileObjects.0)}" target="_blank">{image.file.name}</a></td>
+            <td>
+                <f:if condition="{image.file.metadata.tx_imagecredits14v_name}">
+                    <p class="mb-1"><b>Urheber:</b> {image.file.metadata.tx_imagecredits14v_name}</p>
+                </f:if>
+                <f:if condition="{image.file.metadata.tx_imagecredits14v_link}">
+                    <p class="mb-1"><b>Website:</b> <f:link.external uri="{image.file.metadata.tx_imagecredits14v_link}" target="_blank"> {image.file.metadata.tx_imagecredits14v_link}</f:link.external></p>
+                </f:if>
+                <f:if condition="{image.file.metadata.creator}">
+                    <p class="mb-1"><b>Ersteller:</b> {image.file.metadata.creator}</p>
+                </f:if>
+                <f:if condition="{image.file.metadata.publisher}">
+                    <p class="mb-1"><b>Veröffentlicher:</b> {image.file.metadata.publisher}</p>
+                </f:if>
+                <f:if condition="{image.file.metadata.source}">
+                    <p class="mb-1"><b>Quelle:</b> {image.file.metadata.source}</p>
+                </f:if>
+                <f:if condition="{image.file.metadata.copyright}">
+                    <p class="mb-1"><b>Copyright:</b> {image.file.metadata.copyright}</p>
+                </f:if>
+                <f:if condition="{image.file.metadata.tx_imagecredits14v_term} > 0">
+                    <f:variable name="licenceUid" value="{image.file.metadata.tx_imagecredits14v_term}" />
+                    <f:if condition="{licences.{licenceUid}}">
+                        <f:variable name="licence" value="{licences.{licenceUid}}" />
+                        <p class="mb-1"><b>Lizenz:</b>
+                            <f:if condition="{licence.licenceUrl}">
+                                <f:then><a href="{licence.licenceUrl}" target="_blank">{licence.licenceName}</a></f:then>
+                                <f:else>{licence.licenceName}</f:else>
+                            </f:if>
+                        </p>
+                    </f:if>
+                </f:if>
+            </td>
+            <td>
+                <ul class="mb-0">
+                    <f:for each="{image.pages}" as="page">
+                        <li>
+                            <f:if condition="{page.isPage}">
+                                <f:then>
+                                    <f:link.page pageUid="{page.uid}" target="_blank">
+                                        {page.title}
+                                    </f:link.page>
+                                </f:then>
+                                <f:else>{page.title}</f:else>
+                            </f:if>
+                        </li>
+                    </f:for>
+                </ul>
+            </td>
+        </tr>
+    </f:for>
+    </tbody>
+</table>
+</html>

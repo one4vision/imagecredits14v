@@ -1,0 +1,28 @@
+
+plugin.tx_imagecredits14v_imglist {
+    view {
+        # cat=plugin.tx_imagecredits14v_imglist/file; type=string; label=Path to template root (FE)
+        templateRootPath = EXT:imagecredits14v/Resources/Private/Templates/
+        # cat=plugin.tx_imagecredits14v_imglist/file; type=string; label=Path to template partials (FE)
+        partialRootPath = EXT:imagecredits14v/Resources/Private/Partials/
+        # cat=plugin.tx_imagecredits14v_imglist/file; type=string; label=Path to template layouts (FE)
+        layoutRootPath = EXT:imagecredits14v/Resources/Private/Layouts/
+    }
+    persistence {
+        # cat=plugin.tx_imagecredits14v_imglist//a; type=string; label=Default storage PID
+        storagePid =
+    }
+    settings {
+        // ContentTypes:
+        // -------------
+        // 0 = unbekannter Typ
+        // 1 = Text
+        // 2 = Bild
+        // 3 = Audio
+        // 4 = Video
+        // 5 = Application
+        contentTypes = 2,4,5
+        excludeFormates = ttf, woff, woff2, db, eot, t3d
+        justPagedImages = 0
+    }
+}

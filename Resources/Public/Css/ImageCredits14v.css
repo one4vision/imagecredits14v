@@ -1,0 +1,41 @@
+.controlButton {
+    display: inline-flex;
+    align-items: flex-start;
+    padding-top: 9px;
+}
+
+.ic14v-loader {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    position: absolute;
+    right: 50px;
+    top: 7px;
+}
+.ic14v-loader::after,
+.ic14v-loader::before {
+    content: '';
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #3f3f3f;
+    position: absolute;
+    left: 0;
+    top: 0;
+    animation: animloader 2s linear infinite;
+}
+.ic14v-loader::after {
+    animation-delay: 1s;
+}
+
+@keyframes animloader {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}

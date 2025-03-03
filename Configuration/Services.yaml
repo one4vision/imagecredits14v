@@ -1,0 +1,9 @@
+# Configuration/Services.yaml
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Extension14v\Imagecredits14v\:
+    resource: '../Classes/*'

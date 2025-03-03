@@ -1,0 +1,25 @@
+plugin.tx_imagecredits14v_imglist {
+    view {
+        templateRootPaths.0 = EXT:{extension.extensionKey}/Resources/Private/Templates/
+        templateRootPaths.1 = {$plugin.tx_imagecredits14v_imglist.view.templateRootPath}
+        partialRootPaths.0 = EXT:imagecredits14v/Resources/Private/Partials/
+        partialRootPaths.1 = {$plugin.tx_imagecredits14v_imglist.view.partialRootPath}
+        layoutRootPaths.0 = EXT:imagecredits14v/Resources/Private/Layouts/
+        layoutRootPaths.1 = {$plugin.tx_imagecredits14v_imglist.view.layoutRootPath}
+    }
+    settings {
+        // ContentTypes:
+        // -------------
+        // 0 = unbekannter Typ
+        // 1 = Text
+        // 2 = Bild
+        // 3 = Audio
+        // 4 = Video
+        // 5 = Application
+        contentTypes = {$plugin.tx_imagecredits14v_imglist.settings.contentTypes}
+        excludeFormates = {$plugin.tx_imagecredits14v_imglist.settings.excludeFormates}
+        justPagedImages = {$plugin.tx_imagecredits14v_imglist.settings.justPagedImages}
+    }
+}
+
+plugin.tx_imagecredits14v_thumblist < plugin.tx_imagecredits14v_imglist
