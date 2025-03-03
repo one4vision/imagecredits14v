@@ -41,6 +41,12 @@ defined('TYPO3') || die('Access denied.');
 
     ExtensionManagementUtility::addTypoScript(
         'imagecredits14v',
+        'constants',
+        "@import 'EXT:imagecredits14v/Configuration/TypoScript/constants.typoscript'"
+    );
+
+    ExtensionManagementUtility::addTypoScript(
+        'imagecredits14v',
         'setup',
         "@import 'EXT:imagecredits14v/Configuration/TypoScript/setup.typoscript'"
     );
