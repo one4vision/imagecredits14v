@@ -19,6 +19,12 @@ plugin.tx_imagecredits14v_imglist {
         contentTypes = {$plugin.tx_imagecredits14v_imglist.settings.contentTypes}
         excludeFormates = {$plugin.tx_imagecredits14v_imglist.settings.excludeFormates}
         justPagedImages = {$plugin.tx_imagecredits14v_imglist.settings.justPagedImages}
+        paths {
+            0 = /
+        }
+        news {
+            detailPid =
+        }
     }
 }
 

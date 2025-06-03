@@ -2,6 +2,7 @@
 
 namespace Extension14v\Imagecredits14v\Domain\Repository;
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use Doctrine\DBAL\Driver\Exception;
 use Extension14v\Imagecredits14v\Domain\Model\FileReference;
@@ -213,7 +214,7 @@ class o4vRepository
                 $queryBuilder->andWhere(QueryHelper::stripLogicalOperatorPrefix($permsClause));
             }
             if($useDokType) {
-                $queryBuilder->andWhere($queryBuilder->expr()->eq('doktype', 1));
+                $queryBuilder->andWhere($queryBuilder->expr()->in('doktype', [1,4,254]));
             }
             $statement = $queryBuilder->execute();
             while ($row = $statement->fetchAssociative()) {
@@ -267,14 +268,29 @@ class o4vRepository
             foreach($references as $reference) {
                 /** @var FileReference $reference */
                 $tableName = $reference->getTablenames();
+                $recordUid = $reference->getUidForeign();
                 $pageUid = $reference->getPid();
+                $isNews = false;
+                $newsUid = 0;
                 if(!array_key_exists($pageUid, $pages)) {
                     $pageData = self::getPage($pageUid);
                     if($pageData) {
+                        $showTitle = $pageData['title'];
+                        $isPage = (int) $pageData['doktype'] === 1;
+                        if($tableName === 'tx_news_domain_model_news') {
+                            $isNews = true;
+                            $newsUid = $recordUid;
+                            $showTitle = 'News: '.$this->getLabelFromTable('tx_news_domain_model_news', $recordUid, $showTitle);
+                        }
+                        if($tableName === 'tt_address') {
+                            $showTitle = 'Adresse: '.$this->getLabelFromTable('tt_address', $recordUid, $showTitle);
+                        }
                         $pages[$pageUid] = [
                             'uid' => $pageUid,
-                            'title' => $pageData['title'],
-                            'isPage' => (int) $pageData['doktype'] === 1
+                            'title' => $showTitle,
+                            'isPage' => $isPage,
+                            'isNews' => $isNews,
+                            'newsUid' => $newsUid,
                         ];
                     }
                 }
@@ -318,6 +334,25 @@ class o4vRepository
             $newList[$k]['file'] = $file;
         }
         return $newList;
+    }
+
+    private function getLabelFromTable($table, $uid, $default='') {
+        if(array_key_exists($table, $GLOBALS['TCA'])) {
+            $labelField = $GLOBALS['TCA'][$table]['ctrl']['label'];
+            $label = $this->getRawLabelFromTable($table, $uid, $labelField);
+            if($label !== '') {
+                return $label;
+            }
+        }
+        return $default;
+    }
+
+    private function getRawLabelFromTable($table, $uid, $field) {
+        $record = BackendUtility::getRecord($table, $uid);
+        if(is_array($record) && array_key_exists($field, $record)) {
+            return trim($record[$field]);
+        }
+        return '';
     }
 
     private function getFileMetaData(int $fileUid) {
