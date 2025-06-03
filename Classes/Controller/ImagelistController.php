@@ -12,6 +12,7 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /***
  *
@@ -99,6 +100,10 @@ class ImagelistController extends ActionController
 
         if(!array_key_exists('ignore', $this->settings)) {
             $this->settings['ignore'] = '';
+        }
+
+        if(!array_key_exists('news', $this->settings)) {
+            $this->settings['news'] = ['detailPid' => ''];
         }
 
         $licences = $this->licencesRepository->findAllLicences();

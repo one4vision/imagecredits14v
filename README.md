@@ -32,6 +32,16 @@ The extension comes with two plugins
 > Image-Credits :: Copyright  
 > Image-Credits :: Metadata
 
+It is possible to link news records directly from the copyright overview to a detail page.  
+To do this, the UID of the detail page must be specified via TypoScript.
+
+```bash
+plugin.tx_imagecredits14v_imglist.settings.news.detailPid = 
+```
+
+If this parameter is empty, no link is set.
+
+
 ### Plugin: Copyright   
 
 ---
