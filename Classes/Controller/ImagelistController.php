@@ -165,12 +165,14 @@ class ImagelistController extends ActionController
         $contentType = 2;
         $excludeTypes = GeneralUtility::trimExplode(',', $this->settings['excludeFormates']);
         $directories = GeneralUtility::trimExplode(',', $this->settings['directories'], true);
+        $ignorePages = GeneralUtility::intExplode(',', $this->settings['ignore'], true);
+        $extensions = GeneralUtility::trimExplode(',', $this->settings['extensions'], true);
         $pidList = $this->o4vRepository->getPidTree($this->settings['rootpage'], 999);
         $imageList = [];
         $paths = ($directories !== [] ? $this->buildFilePaths($directories) : []);
-
+        $pagesToIgnore = $this->collectPagesToIgnore($ignorePages);
         if($pidList !== []) {
-            $fileReferences = $this->fileReferenceRepository->findReferencesByPages($pidList, false);
+            $fileReferences = $this->fileReferenceRepository->findReferencesByPages($pidList, false, $extensions);
             if($fileReferences !== []) {
                 $fileList = $this->o4vRepository->collectFilesFromReferences(
                     $fileReferences,
@@ -179,7 +181,8 @@ class ImagelistController extends ActionController
                     $excludeTypes,
                     'FE',
                     $paths,
-                    $pidList
+                    $pidList,
+                    $pagesToIgnore
                 );
                 ksort($fileList);
                 $imageList = $this->cleanUpImageList($fileList);
