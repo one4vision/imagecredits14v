@@ -62,4 +62,13 @@ class LicencesRepository extends Repository
         }
         return $backendUriBuilder->buildUriFromRoute('record_edit', $urlParameters);
     }
+
+    public function getDefaultLicences() {
+        $items = [];
+        $importFile = GeneralUtility::getFileAbsFileName('EXT:imagecredits14v/Resources/Public/default_licences.csv');
+        if(file_exists($importFile)) {
+            $items = array_map('str_getcsv', file($importFile));
+        }
+        return $items;
+    }
 }

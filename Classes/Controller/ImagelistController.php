@@ -5,14 +5,16 @@ use Psr\Http\Message\ResponseInterface;
 use Extension14v\Imagecredits14v\Domain\Repository\FileReferenceRepository;
 use Extension14v\Imagecredits14v\Domain\Repository\LicencesRepository;
 use Extension14v\Imagecredits14v\Domain\Repository\o4vRepository;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Resource\FileRepository;
-use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /***
  *
@@ -67,11 +69,6 @@ class ImagelistController extends ActionController
 
         $this->settings['paths'] = [];
 
-        /** @var Site $currentSite */
-        $currentSite = $this->request->getAttribute('site');
-        $rootPageUid = $currentSite->getRootPageId();
-        $this->settings['rootpage'] = ($rootPageUid === 0 ? 1 : $rootPageUid);
-
         if(!array_key_exists('directories', $this->settings)) {
             $this->settings['directories'] = '';
         }
@@ -104,6 +101,10 @@ class ImagelistController extends ActionController
 
         if(!array_key_exists('news', $this->settings)) {
             $this->settings['news'] = ['detailPid' => ''];
+        }
+
+        if(!array_key_exists('feGroups', $this->settings)) {
+            $this->settings['feGroups'] = '';
         }
 
         $licences = $this->licencesRepository->findAllLicences();
@@ -152,10 +153,10 @@ class ImagelistController extends ActionController
      */
     public function thumbsAction(): ResponseInterface
     {
-        $beLoggedIn = false;
-        if($GLOBALS['BE_USER'])
-        {
-            $beLoggedIn = true;
+        if($GLOBALS['BE_USER']) {
+            $isEditable = true;
+        } else {
+            $isEditable = $this->checkFeGroupAccess($this->request, $this->settings['feGroups']);
         }
 
         $jsFile = 'EXT:imagecredits14v/Resources/Public/JavaScript/ImageCredits14v.js';
@@ -191,7 +192,7 @@ class ImagelistController extends ActionController
         }
 
         $this->view->assign('images', $imageList);
-        $this->view->assign('beUser', $beLoggedIn);
+        $this->view->assign('isEditable', $isEditable);
         $this->view->assign('licences', $this->licences);
         return $this->htmlResponse();
     }
@@ -248,5 +249,22 @@ class ImagelistController extends ActionController
             }
         }
         return $pagesList;
+    }
+
+    private function checkFeGroupAccess($request, string $feGroups=''): bool {
+        /** @var FrontendUserAuthentication $frontendUser */
+        $frontendUser = $request->getAttribute('frontend.user');
+        if($frontendUser->getUserId() && $frontendUser->getUserId() > 0) {
+            $userGroups = GeneralUtility::intExplode(',', $frontendUser->user['usergroup'], true);
+            $possibleGroups = GeneralUtility::intExplode(',', $feGroups, true);
+            if(\count($possibleGroups) > 0) {
+                foreach($possibleGroups as $group) {
+                    if(in_array($group, $userGroups, true)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

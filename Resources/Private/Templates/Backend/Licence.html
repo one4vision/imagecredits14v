@@ -31,5 +31,16 @@
       </f:for>
       </tbody>
    </table>
+
+    <f:if condition="{defaultLicences}">
+        <hr />
+        <h3>Default-Lizenzen importieren</h3>
+        <ul>
+            <f:for each="{defaultLicences}" as="licence">
+                <li>{licence.0}</li>
+            </f:for>
+        </ul>
+        <f:link.action action="licence" class="btn btn-secondary" arguments="{import:'default'}">import</f:link.action>
+    </f:if>
 </f:section>
 </html>

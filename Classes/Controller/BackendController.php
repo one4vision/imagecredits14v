@@ -170,9 +170,24 @@ class BackendController extends ActionController
         $licences = $this->licencesRepository->findAllLicences();
         $licences = $this->licencesRepository->expandLicences($licences);
         $addLink = $this->licencesRepository->createBackendLink('new','tx_imagecredits14v_domain_model_licences',0);
+
+        $defaultLicences = $this->licencesRepository->getDefaultLicences();
+        if($this->request->hasArgument('import') && $this->request->getArgument('import') === 'default') {
+            foreach($defaultLicences as $licence) {
+                $newLicence = new \Extension14v\Imagecredits14v\Domain\Model\Licences();
+                $newLicence->setName( $licence[0]);
+                $newLicence->setLicenceName($licence[1]);
+                $newLicence->setLicenceUrl($licence[2]);
+                $newLicence->setPid(0);
+                $this->licencesRepository->add($newLicence);
+            }
+            return $this->redirect('licence');
+        }
+
         $this->moduleTemplate->assignMultiple([
             'licences' => $licences,
-            'addLink' => $addLink
+            'addLink' => $addLink,
+            'defaultLicences' => $defaultLicences
         ]);
         $this->moduleTemplate->setTitle('Datei-Metadaten');
         $this->addButtons();
