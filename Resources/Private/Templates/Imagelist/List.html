@@ -3,7 +3,10 @@
 
 <f:section name="content">
 	<f:if condition="{settings.showImages}">
-		<f:then><f:render partial="Imagelist/Images" arguments="{_all}" /></f:then>
+		<f:then>
+            <f:render partial="Imagelist/Images" arguments="{_all}" />
+            <f:render partial="Imagelist/Lightbox" />
+        </f:then>
 		<f:else><f:render partial="Imagelist/Table" arguments="{_all}" /></f:else>
 	</f:if>
 </f:section>

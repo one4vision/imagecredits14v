@@ -1,6 +1,7 @@
 <?php
 namespace Extension14v\Imagecredits14v\Controller;
 
+use Extension14v\Imagecredits14v\Domain\Model\Licences;
 use Psr\Http\Message\ResponseInterface;
 use Extension14v\Imagecredits14v\Domain\Repository\FileReferenceRepository;
 use Extension14v\Imagecredits14v\Domain\Repository\LicencesRepository;
@@ -16,28 +17,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-/***
- *
- * This file is part of the "Imagecredits14v" Extension for TYPO3 CMS.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- *  (c) 2019 Oliver Busch <ob@14v.de>, one4vision GmbH
- *
- ***/
-
-/**
- * BackendController
- */
 class BackendController extends ActionController
 {
     protected ?o4vRepository $o4vRepository = null;
-
     protected ?FileReferenceRepository $fileReferenceRepository = null;
-
     protected ?LicencesRepository $licencesRepository = null;
-
     protected ?ModuleData $moduleData = null;
     protected ModuleTemplate $moduleTemplate;
     protected ModuleTemplateFactory $moduleTemplateFactory;
@@ -81,7 +65,6 @@ class BackendController extends ActionController
         $this->settings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
         );
-
         $this->moduleData = $this->request->getAttribute('moduleData');
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $this->moduleTemplate->setFlashMessageQueue($this->getFlashMessageQueue());
@@ -170,9 +153,24 @@ class BackendController extends ActionController
         $licences = $this->licencesRepository->findAllLicences();
         $licences = $this->licencesRepository->expandLicences($licences);
         $addLink = $this->licencesRepository->createBackendLink('new','tx_imagecredits14v_domain_model_licences',0);
+
+        $defaultLicences = $this->licencesRepository->getDefaultLicences();
+        if($this->request->hasArgument('import') && $this->request->getArgument('import') === 'default') {
+            foreach($defaultLicences as $licence) {
+                $newLicence = new Licences();
+                $newLicence->setName( $licence[0]);
+                $newLicence->setLicenceName($licence[1]);
+                $newLicence->setLicenceUrl($licence[2]);
+                $newLicence->setPid(0);
+                $this->licencesRepository->add($newLicence);
+            }
+            return $this->redirect('licence');
+        }
+
         $this->moduleTemplate->assignMultiple([
             'licences' => $licences,
-            'addLink' => $addLink
+            'addLink' => $addLink,
+            'defaultLicences' => $defaultLicences
         ]);
         $this->moduleTemplate->setTitle('Datei-Metadaten');
         $this->addButtons();

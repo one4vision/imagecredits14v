@@ -7,18 +7,6 @@ namespace Extension14v\Imagecredits14v\Domain\Model;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
- * This file is part of the "Gemeinde-Paket" Extension for TYPO3 CMS.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * (c) 2022 Oliver Busch <ob@14v.de>, one4vision GmbH
- */
-
-/**
- * Category
- */
 class Licences extends AbstractEntity {
     protected string $name='';
     protected string $licenceName='';

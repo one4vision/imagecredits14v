@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Extension14v\Imagecredits14v\Domain\Repository;
 
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use Extension14v\Imagecredits14v\Domain\Model\Licences;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
@@ -61,5 +60,14 @@ class LicencesRepository extends Repository
             $urlParameters['defVals'] = $defaultValues;
         }
         return $backendUriBuilder->buildUriFromRoute('record_edit', $urlParameters);
+    }
+
+    public function getDefaultLicences() {
+        $items = [];
+        $importFile = GeneralUtility::getFileAbsFileName('EXT:imagecredits14v/Resources/Public/default_licences.csv');
+        if(file_exists($importFile)) {
+            $items = array_map('str_getcsv', file($importFile));
+        }
+        return $items;
     }
 }

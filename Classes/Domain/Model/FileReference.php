@@ -1,6 +1,8 @@
 <?php
 namespace Extension14v\Imagecredits14v\Domain\Model;
+
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as BaseFileReference;
+
 class FileReference extends BaseFileReference {
     protected int $uidForeign = 0;
     protected string $tablenames = '';

@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-lg-2">
                     <a href="{f:uri.image(image: image.fileObjects.0)}" target="_blank">
-                        <f:image image="{image.fileObjects.0}" class="img-fluid" loading="lazy" maxWidth="250" maxHeight="250" />
+                        <f:image image="{image.fileObjects.0}" data="{fullsrc: '{f:uri.image(image: image.fileObjects.0)}'}" alt="{image.file.name}" class="img-fluid lightbox-enabled" loading="lazy" maxWidth="250" maxHeight="250" />
                     </a>
                 </div>
                 <div class="col-lg-10">
@@ -65,7 +65,7 @@
                             </tr>
                         </f:if>
 
-                        <f:if condition="{beUser}">
+                        <f:if condition="{isEditable}">
                             <f:then>
                                 <tr>
                                     <th style="width: 200px" nowrap="nowrap">Copyright-Informationen</th>
@@ -92,13 +92,13 @@
                                 </f:if>
                             </f:else>
                         </f:if>
-                        <f:if condition="{beUser}">
+                        <f:if condition="{isEditable}">
                             <f:then>
                                 <tr>
                                     <th style="width: 200px" nowrap="nowrap">Alternativer Text</th>
                                     <td>
                                         <div class="input-group">
-                                            <f:form.textfield class="form-control controlClass"
+                                            <f:form.textarea class="form-control controlClass"
                                                               placeholder="-- nicht angegeben --"
                                                               id="f1_{image.file.metadata.uid}"
                                                               value="{image.file.metadata.alternative}"
@@ -119,7 +119,7 @@
                                 </f:if>
                             </f:else>
                         </f:if>
-                        <f:if condition="{beUser}">
+                        <f:if condition="{isEditable}">
                             <f:then>
                                 <tr>
                                     <th style="width: 200px" nowrap="nowrap">Bildbeschriftung</th>
@@ -146,7 +146,7 @@
                                 </f:if>
                             </f:else>
                         </f:if>
-                        <f:if condition="{beUser}">
+                        <f:if condition="{isEditable}">
                             <f:then>
                                 <tr>
                                     <th style="width: 200px" nowrap="nowrap">Download Name</th>
@@ -191,6 +191,7 @@
         </div>
         <hr/>
     </f:for>
+    <f:render partial="Imagelist/Lightbox" />
 </f:section>
 
 <f:section name="urheber">

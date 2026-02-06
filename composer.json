@@ -17,8 +17,8 @@
         "source": "https://github.com/one4vision/imagecredits14v.git"
     },
     "require": {
-        "typo3/cms-core": "~12.4.0",
-        "typo3/cms-filemetadata": "~12.4.0",
+        "typo3/cms-core": "^12.4",
+        "typo3/cms-filemetadata": "^12.4",
         "php": ">=8.1"
     },
     "autoload": {
