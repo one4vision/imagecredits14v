@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-lg-2">
                     <a href="{f:uri.image(image: image.fileObjects.0)}" target="_blank">
-                        <f:image image="{image.fileObjects.0}" class="img-fluid" loading="lazy" maxWidth="250" maxHeight="250" />
+                        <f:image image="{image.fileObjects.0}" data="{fullsrc: '{f:uri.image(image: image.fileObjects.0)}'}" alt="{image.file.name}" class="img-fluid lightbox-enabled" loading="lazy" maxWidth="250" maxHeight="250" />
                     </a>
                 </div>
                 <div class="col-lg-10">
@@ -191,6 +191,7 @@
         </div>
         <hr/>
     </f:for>
+    <f:render partial="Imagelist/Lightbox" />
 </f:section>
 
 <f:section name="urheber">

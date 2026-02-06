@@ -5,31 +5,14 @@ use Psr\Http\Message\ResponseInterface;
 use Extension14v\Imagecredits14v\Domain\Repository\FileReferenceRepository;
 use Extension14v\Imagecredits14v\Domain\Repository\LicencesRepository;
 use Extension14v\Imagecredits14v\Domain\Repository\o4vRepository;
-use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Resource\FileRepository;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
-/***
- *
- * This file is part of the "ImageCredits14v" Extension for TYPO3 CMS.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- *  (c) 2019 Oliver Busch <ob@14v.de>, one4vision GmbH
- *
- ***/
-
-/**
- * TestController
- */
 class ImagelistController extends ActionController
 {
     protected $settings = [];
@@ -112,6 +95,7 @@ class ImagelistController extends ActionController
     }
 
     public function listAction(): ResponseInterface {
+        $this->loadStyling();
         $contentType = 2;
         $excludeTypes = GeneralUtility::trimExplode(',', $this->settings['excludeFormates'], true);
         $directories = GeneralUtility::trimExplode(',', $this->settings['directories'], true);
@@ -148,21 +132,10 @@ class ImagelistController extends ActionController
         return $this->htmlResponse();
     }
 
-    /**
-     * action thumbs
-     */
     public function thumbsAction(): ResponseInterface
     {
-        if($GLOBALS['BE_USER']) {
-            $isEditable = true;
-        } else {
-            $isEditable = $this->checkFeGroupAccess($this->request, $this->settings['feGroups']);
-        }
-
-        $jsFile = 'EXT:imagecredits14v/Resources/Public/JavaScript/ImageCredits14v.js';
-        $assetCollector = GeneralUtility::makeInstance(AssetCollector::class);
-        $assetCollector->addJavaScript('imageCreditJs', $jsFile);
-
+        $this->loadStyling();
+        $isEditable = $this->checkFeGroupAccess($this->request, $this->settings['feGroups']);
         $contentType = 2;
         $excludeTypes = GeneralUtility::trimExplode(',', $this->settings['excludeFormates']);
         $directories = GeneralUtility::trimExplode(',', $this->settings['directories'], true);
@@ -197,6 +170,16 @@ class ImagelistController extends ActionController
         return $this->htmlResponse();
     }
 
+    public function loadStyling() {
+        $jsFile = 'EXT:imagecredits14v/Resources/Public/JavaScript/ImageCredits14v.js';
+        $lightboxFile = 'EXT:imagecredits14v/Resources/Public/JavaScript/Lightbox.js';
+        $cssFile = 'EXT:imagecredits14v/Resources/Public/Css/ImageCredits14v.css';
+        $assetCollector = GeneralUtility::makeInstance(AssetCollector::class);
+        $assetCollector->addJavaScript('imageCreditJs', $jsFile);
+        $assetCollector->addJavaScript('imageCreditsLightboxJs', $lightboxFile);
+        $assetCollector->addStyleSheet('imageCreditCss', $cssFile);
+    }
+
     /**
      * @return array[]
      */
@@ -213,9 +196,6 @@ class ImagelistController extends ActionController
         return $cleanedList;
     }
 
-    /**
-     * @return string[]&array[]
-     */
     private function buildFilePaths($paths): array {
         $build = [];
         foreach($paths as $path) {
@@ -252,6 +232,9 @@ class ImagelistController extends ActionController
     }
 
     private function checkFeGroupAccess($request, string $feGroups=''): bool {
+        if($GLOBALS['BE_USER']) {
+            return true;
+        }
         /** @var FrontendUserAuthentication $frontendUser */
         $frontendUser = $request->getAttribute('frontend.user');
         if($frontendUser->getUserId() && $frontendUser->getUserId() > 0) {

@@ -6,16 +6,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 class CleanerCommandController extends AbstractTask {
-    public $clean_creator;
+    public string $clean_creator = '';
     public function execute(): bool
     {
         $cleanerRepository = GeneralUtility::makeInstance(CleanerRepository::class);
-        $clean_creator = trim((string)$this->clean_creator);
-
+        $clean_creator = trim($this->clean_creator);
         if($clean_creator !== '') {
             $cleanerRepository->cleanupCreator(GeneralUtility::trimExplode(',', $clean_creator, true));
         }
-
         return true;
     }
 }

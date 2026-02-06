@@ -1,26 +1,12 @@
 <?php
 namespace Extension14v\Imagecredits14v\Controller;
 
-/***
- *
- * This file is part of the "Contentlinkreplace14v" Extension for TYPO3 CMS.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- *  (c) 2019 Oliver Busch <ob@14v.de>, one4vision GmbH
- *
- ***/
-
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Extension14v\Imagecredits14v\Domain\Repository\AjaxRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * BackendController
- */
 class AjaxController extends ActionController
 {
 

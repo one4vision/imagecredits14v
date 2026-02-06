@@ -356,8 +356,7 @@ class o4vRepository
     }
 
     private function getFileMetaData(int $fileUid) {
-        $metaDataRepository = GeneralUtility::makeInstance(MetaDataRepository::class);
-        return $metaDataRepository->findByFileUid($fileUid);
+        return GeneralUtility::makeInstance(MetaDataRepository::class)->findByFileUid($fileUid);
     }
 
     public static function getPage($pageUid) {

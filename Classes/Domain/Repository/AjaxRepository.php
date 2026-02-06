@@ -5,10 +5,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
-
-/**
- * The repository for Ajax
- */
 class AjaxRepository
 {
     public function saveMetaDataValue(int $metaUid, string $fieldName, $fieldValue): bool

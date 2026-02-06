@@ -4,7 +4,7 @@
             <f:if condition="{settings.showImages}">
                 <div class="col-md-2 col-sm-12">
                     <a href="{f:uri.image(image: image.fileObjects.0)}" target="_blank">
-                        <f:image image="{image.fileObjects.0}" class="img-fluid" loading="lazy" maxWidth="250" maxHeight="250" />
+                        <f:image image="{image.fileObjects.0}" class="img-fluid lightbox-enabled" data="{fullsrc: '{f:uri.image(image: image.fileObjects.0)}'}" alt="{image.file.name}" loading="lazy" maxWidth="250" maxHeight="250" />
                     </a>
                 </div>
             </f:if>

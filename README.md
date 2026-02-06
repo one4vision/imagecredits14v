@@ -48,6 +48,10 @@ If this parameter is empty, no link is set.
 
 Depending on the configuration, this plugin displays all images used in the TYPO3 system with details of the page and copyright information.
 
+### `Root Page-ID`
+
+If the website consists of several root pages, the root to be displayed can be specified here.
+
 ### `Nur aktuelle Seite (ohne Unterseite)`
 
 If checked, only images from the page which contains the plugin will be displayed.  
@@ -80,13 +84,28 @@ Depending on the plugin settings, all meta data of the images found are output v
  
 If the site visitor is a logged-in backend user, the fields “Copyright information”, “Alternative text”, “Image caption” and “Download name” are delivered as form fields and can be edited directly in the frontend.
 
-### `ID des Mandanten`
+### `Root Page-ID`
 
-If the website consists of several clients, the client to be displayed can be specified here.
+If the website consists of several root pages, the root to be displayed can be specified here.
+
+### `Referenzen aus Erweiterungen anzeigen`
+
+By default, only images from the tables tt_content and pages are read. Here you can specify from which tables the images can still originate.
+Only tables that can be found in the sys_file_reference table are specified.
 
 ### `Nur Dateien aus folgenden Verzeichnissen)`
 
 Here you can specify directories (from fileadmin) in which the images to be displayed MUST be located.
+
+### `Referenzen auf folgenden Seiten ignorieren`
+
+If images are not to be displayed on certain pages (e.g. demo pages), these can be defined here.
+
+### `Bearbeitung für folgende Website-Benutzergruppen freigegeben`
+
+Meta data can be edited directly in the frontend using an editing form. By default, this is possible for all logged-in backend users. 
+If you want this function to be available to logged-in frontend users as well, you can add the necessary user groups here.
+
 
 ## Backend Module
 
@@ -96,6 +115,10 @@ The files can be edited directly from the list.
 ![ImageCredits14v BackendLink](Resources/Public/Documentation/Backend-Icon.jpg)
 
 ![ImageCredits14v BackendModule](Resources/Public/Documentation/Backend-Module.jpg)
+
+### Licences
+
+The “Image Licenses” button can be used to manage licenses that can be assigned to images. This license is then displayed in the image overview.
 
 ____
 
