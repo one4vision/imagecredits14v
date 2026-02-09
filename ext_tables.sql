@@ -3,7 +3,10 @@ CREATE TABLE sys_file_metadata (
 	tx_imagecredits14v_link tinytext,
 	tx_imagecredits14v_exlist tinyint(4) unsigned NOT NULL DEFAULT '0',
     tx_imagecredits14v_term int(11) unsigned NOT NULL DEFAULT '0',
-    keywords text
+    keywords text,
+    caption text,
+    download_name varchar(255) DEFAULT '',
+    copyright text
 );
 
 CREATE TABLE tx_imagecredits14v_domain_model_licences (

@@ -16,14 +16,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class o4vRepository
 {
-    /**
-     * @var array
-     */
     protected array $rootLineChecked = [];
-    /**
-     * @var array
-     */
     protected array $pagesInTrash = [];
+    public function __construct(private readonly ConnectionPool $connectionPool)
+    {
+    }
 
     public function collectFilesFromReferences(array $references, array $settings, int $selectedType, array $excludeTypes, string $area='BE', array $fePaths=[], array $pidList=[], array $pagesToIgnore=[]): array {
         $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
@@ -67,7 +64,7 @@ class o4vRepository
             $allowedTypes = GeneralUtility::intExplode(',', $settings['contentTypes'], true);
             $paths = (is_array($settings['paths']) ? $settings['paths'] : []);
 
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
+            $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_file');
             $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
             $files = $queryBuilder->select('*')
                 ->from('sys_file')
@@ -160,7 +157,7 @@ class o4vRepository
                                                 $metadata['uid'] => 'edit'
                                             ]
                                         ],
-                                        'columnsOnly' => '',
+                                        'columnsOnly' => ['sys_file_metadata' => []],
                                         'createExtension' => 0,
                                         'returnUrl' => GeneralUtility::getIndpEnv(
                                                 'REQUEST_URI'
@@ -202,12 +199,12 @@ class o4vRepository
         }
         $theList = $begin === 0 ? $id : '';
         if ($id && $depth > 0) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+            $queryBuilder = $this->connectionPool->getQueryBuilderForTable('pages');
             $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
             $queryBuilder->select('uid')
                 ->from('pages')
                 ->where(
-                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($id, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($id, \TYPO3\CMS\Core\Database\Connection::PARAM_INT)),
                     $queryBuilder->expr()->eq('sys_language_uid', 0)
                 );
             if($permsClause !== '') {
@@ -216,7 +213,7 @@ class o4vRepository
             if($useDokType) {
                 $queryBuilder->andWhere($queryBuilder->expr()->in('doktype', [1,4,254]));
             }
-            $statement = $queryBuilder->execute();
+            $statement = $queryBuilder->executeQuery();
             while ($row = $statement->fetchAssociative()) {
                 if ($begin <= 0) {
                     $theList .= ',' . $row['uid'];
@@ -230,23 +227,20 @@ class o4vRepository
     }
 
     /**
-     * @param array $theList
-     * @param int $id
-     * @return array
      * @throws Exception
      * @throws \Doctrine\DBAL\Exception
      */
     public function getTreeListDoktype(array $theList, int $id): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('pages');
         $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
         $queryBuilder->select('uid','pid','doktype')
             ->from('pages')
             ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($id, \PDO::PARAM_INT)),
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($id, \TYPO3\CMS\Core\Database\Connection::PARAM_INT)),
                 $queryBuilder->expr()->eq('sys_language_uid', 0)
             );
-        $statement = $queryBuilder->execute();
+        $statement = $queryBuilder->executeQuery();
         while ($row = $statement->fetchAssociative()) {
             $pid = (int) $row['pid'];
             $theList[] = $row;
@@ -305,7 +299,7 @@ class o4vRepository
     /**
      * @return array<int|string, array{references: mixed, fileObjects: mixed, edit: mixed, file: mixed}>
      */
-    public function moveLizenzToFile($images, $licences): array {
+    public function moveLizenzToFile($images, array $licences): array {
         $newList = [];
         foreach($images as $k => $image) {
             $newList[$k]['references'] = $image['references'];
@@ -318,9 +312,9 @@ class o4vRepository
 
             $fileName = $file['name'];
             $strippedName = '';
-            if(strlen($fileName) > 95) {
-                $firstLetters = substr($fileName, 0, 45);
-                $lastLetters = substr($fileName, -45);
+            if(strlen((string) $fileName) > 95) {
+                $firstLetters = substr((string) $fileName, 0, 45);
+                $lastLetters = substr((string) $fileName, -45);
                 $strippedName = $firstLetters.'...'.$lastLetters;
             }
             $file['strippedName'] = $strippedName;
@@ -336,7 +330,7 @@ class o4vRepository
         return $newList;
     }
 
-    private function getLabelFromTable($table, $uid, $default='') {
+    private function getLabelFromTable(string $table, $uid, $default='') {
         if(array_key_exists($table, $GLOBALS['TCA'])) {
             $labelField = $GLOBALS['TCA'][$table]['ctrl']['label'];
             $label = $this->getRawLabelFromTable($table, $uid, $labelField);
@@ -347,19 +341,20 @@ class o4vRepository
         return $default;
     }
 
-    private function getRawLabelFromTable($table, $uid, $field) {
+    private function getRawLabelFromTable(string $table, $uid, $field): string {
         $record = BackendUtility::getRecord($table, $uid);
         if(is_array($record) && array_key_exists($field, $record)) {
-            return trim($record[$field]);
+            return trim((string) $record[$field]);
         }
         return '';
     }
 
-    private function getFileMetaData(int $fileUid) {
+    private function getFileMetaData(int $fileUid): array
+    {
         return GeneralUtility::makeInstance(MetaDataRepository::class)->findByFileUid($fileUid);
     }
 
-    public static function getPage($pageUid) {
+    public static function getPage(int $pageUid): array {
         return GeneralUtility::makeInstance(PageRepository::class)->getPage($pageUid);
     }
 

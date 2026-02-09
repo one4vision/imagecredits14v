@@ -2,6 +2,10 @@
 
 -----------
 
+## 13.0.0
+
+- Compatibility with TYPO3 13
+
 ## 12.3.5
 
 ### BUGFIX

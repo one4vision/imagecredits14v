@@ -7,7 +7,7 @@ class FileReference extends BaseFileReference {
     protected int $uidForeign = 0;
     protected string $tablenames = '';
     protected string $fieldname = '';
-    protected $uidLocal = 0;
+    protected ?int $uidLocal = 0;
 
     public function getUidForeign(): int
     {

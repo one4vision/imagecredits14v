@@ -15,6 +15,9 @@ defined('TYPO3') || die('Access denied.');
         'Imglist',
         [
             ImagelistController::class => 'list'
+        ],
+        [
+            ImagelistController::class => 'list'
         ]
     );
 
@@ -30,7 +33,7 @@ defined('TYPO3') || die('Access denied.');
         ]
     );
 
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['changecopyrightinformation'] = AjaxController::class;
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['imagecredits_update'] = AjaxController::class.'::updateCopyrightAction';
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][CleanerCommandController::class] = [
         'extension' => 'imagecredits14v',

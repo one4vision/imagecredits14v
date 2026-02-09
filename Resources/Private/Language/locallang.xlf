@@ -30,6 +30,15 @@
 			<trans-unit id="tx_imagecredits14v_domain_model_licences.licence_url" resname="tx_imagecredits14v_domain_model_licences.licence_url">
 				<source>Lizenz-URL</source>
 			</trans-unit>
+            <trans-unit id="sys_file_metadata.caption" resname="sys_file_metadata.caption">
+                <source>Bildbeschriftung</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.download_name" resname="sys_file_metadata.download_name">
+                <source>Download Name</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.copyright" resname="sys_file_metadata.copyright">
+                <source>Copyright-Informationen</source>
+            </trans-unit>
 
 			<trans-unit id="tx_imagecredits14v.backend.licence.title" resname="tx_imagecredits14v.backend.licence.title">
 				<source>Bild-Lizenzen verwalten</source>

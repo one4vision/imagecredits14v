@@ -5,11 +5,13 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-class ForeignContentReferences {
-    public function getForeignContents(&$params): void {
+readonly class ForeignContentReferences {
+
+    public function getForeignContents(array &$params): void {
         $ignoreInList = ['pages','tt_content'];
         $table = 'sys_file_reference';
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable($table);
         $result = $queryBuilder->select('tablenames')
             ->from($table)
             ->where(

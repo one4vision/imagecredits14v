@@ -3,15 +3,15 @@ namespace Extension14v\Imagecredits14v\Command;
 
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\SchedulerManagementAction;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 class CleanerCommandControllerAdditionalFieldProvider extends AbstractAdditionalFieldProvider {
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule): array
     {
         $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
         if (empty($taskInfo['clean_creator'])) {
-            $taskInfo['clean_creator'] = $currentSchedulerModuleAction->equals(Action::EDIT) ? $task->clean_creator : '';
+            $taskInfo['clean_creator'] = $currentSchedulerModuleAction === SchedulerManagementAction::EDIT ? $task->clean_creator : '';
         }
 
         // Creator
