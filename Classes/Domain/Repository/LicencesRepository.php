@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Extension14v\Imagecredits14v\Domain\Repository;
 
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use Extension14v\Imagecredits14v\Domain\Model\Licences;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
@@ -44,7 +45,8 @@ class LicencesRepository extends Repository
     /**
      * @throws RouteNotFoundException
      */
-    public function createBackendLink($action, $table, $uid, $columnsOnly = '', $defaultValues = [], $returnUrl = '') {
+    public function createBackendLink($action, $table, $uid, $columnsOnly = '', $defaultValues = [], $returnUrl = ''): Uri
+    {
         $backendUriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $urlParameters = [
             'edit' => [
@@ -52,7 +54,7 @@ class LicencesRepository extends Repository
                     $uid => $action
                 ]
             ],
-            'columnsOnly' => $columnsOnly,
+            'columnsOnly' => [$table => [$columnsOnly]],
             'createExtension' => 0,
             'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
         ];
@@ -62,11 +64,19 @@ class LicencesRepository extends Repository
         return $backendUriBuilder->buildUriFromRoute('record_edit', $urlParameters);
     }
 
-    public function getDefaultLicences() {
+    /**
+     * @return array
+     */
+    public function getDefaultLicences(): array {
         $items = [];
         $importFile = GeneralUtility::getFileAbsFileName('EXT:imagecredits14v/Resources/Public/default_licences.csv');
         if(file_exists($importFile)) {
-            $items = array_map('str_getcsv', file($importFile));
+            if (($handle = fopen($importFile, 'rb')) !== false) {
+                while (($row = fgetcsv($handle, 0, ',', '"', '')) !== false) {
+                    $items[] = $row;
+                }
+                fclose($handle);
+            }
         }
         return $items;
     }

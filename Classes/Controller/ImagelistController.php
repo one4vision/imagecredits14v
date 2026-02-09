@@ -8,43 +8,29 @@ use Extension14v\Imagecredits14v\Domain\Repository\o4vRepository;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Resource\FileRepository;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 class ImagelistController extends ActionController
 {
-    protected $settings = [];
+    protected array $settings = [];
     protected array $licences = [];
     protected ?FileRepository $fileRepository = null;
-    protected ?o4vRepository $o4vRepository = null;
-    protected ?LicencesRepository $licencesRepository = null;
-    protected ?FileReferenceRepository $fileReferenceRepository = null;
-    protected IconFactory $iconFactory;
-
-    public function injectIconFactory(IconFactory $iconFactory): void
-    {
-        $this->iconFactory = $iconFactory;
-    }
-
-    public function injectO4vRepository(o4vRepository $o4vRepository): void {
-        $this->o4vRepository = $o4vRepository;
-    }
-
-    public function injectFileReferenceRepository(FileReferenceRepository $fileReferenceRepository): void {
-        $this->fileReferenceRepository = $fileReferenceRepository;
-    }
-
-    public function injectLicencesRepository(LicencesRepository $licencesRepository): void {
-        $this->licencesRepository = $licencesRepository;
-    }
+    public function __construct(
+        protected IconFactory $iconFactory,
+        protected ?o4vRepository $o4vRepository,
+        protected ?FileReferenceRepository $fileReferenceRepository,
+        protected ?LicencesRepository $licencesRepository
+    ) { }
 
     public function initializeAction(): void {
         $startSettings = $this->settings;
-        $settings = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT, 'imagecredits14v'
-        );
+        /** @var FrontendTypoScript $feTypoScript */
+        $feTypoScript = $this->request->getAttribute('frontend.typoscript');
+        $settings = $feTypoScript->getSetupArray();
         $settings = GeneralUtility::removeDotsFromTS($settings);
         $this->settings = $settings['plugin']['tx_imagecredits14v_imglist']['settings'];
         $this->settings = array_merge($this->settings, $startSettings);
@@ -102,7 +88,7 @@ class ImagelistController extends ActionController
         $ignorePages = GeneralUtility::intExplode(',', $this->settings['ignore'], true);
         $extensions = GeneralUtility::trimExplode(',', $this->settings['extensions'], true);
         if($this->settings['currentPage'] === 1) {
-            $pidList = [(int)$GLOBALS['TSFE']->id];
+            $pidList = [(int)$this->request->getAttribute('frontend.page.information')->getId()];
         } else {
             $pidList = $this->o4vRepository->getPidTree($this->settings['rootpage'], 999, true, false, (int) $this->settings['justPagedImages']);
         }
@@ -134,6 +120,7 @@ class ImagelistController extends ActionController
 
     public function thumbsAction(): ResponseInterface
     {
+        $fileMetaExtension = true;
         $this->loadStyling();
         $isEditable = $this->checkFeGroupAccess($this->request, $this->settings['feGroups']);
         $contentType = 2;
@@ -163,14 +150,14 @@ class ImagelistController extends ActionController
                 $imageList = $this->o4vRepository->buildReferencePages($imageList);
             }
         }
-
         $this->view->assign('images', $imageList);
         $this->view->assign('isEditable', $isEditable);
         $this->view->assign('licences', $this->licences);
+        $this->view->assign('fileMetaExtension', $fileMetaExtension);
         return $this->htmlResponse();
     }
 
-    public function loadStyling() {
+    public function loadStyling(): void {
         $jsFile = 'EXT:imagecredits14v/Resources/Public/JavaScript/ImageCredits14v.js';
         $lightboxFile = 'EXT:imagecredits14v/Resources/Public/JavaScript/Lightbox.js';
         $cssFile = 'EXT:imagecredits14v/Resources/Public/Css/ImageCredits14v.css';
@@ -196,7 +183,7 @@ class ImagelistController extends ActionController
         return $cleanedList;
     }
 
-    private function buildFilePaths($paths): array {
+    private function buildFilePaths(array $paths): array {
         $build = [];
         foreach($paths as $path) {
             $pathParts = GeneralUtility::trimExplode(':/', $path);
@@ -207,10 +194,6 @@ class ImagelistController extends ActionController
         return $build;
     }
 
-    /**
-     * @param array $rootPages
-     * @return array
-     */
     private function collectPagesToIgnore(array $rootPages): array
     {
         $pagesList = [];
@@ -231,7 +214,7 @@ class ImagelistController extends ActionController
         return $pagesList;
     }
 
-    private function checkFeGroupAccess($request, string $feGroups=''): bool {
+    private function checkFeGroupAccess(RequestInterface $request, string $feGroups=''): bool {
         if($GLOBALS['BE_USER']) {
             return true;
         }
@@ -240,11 +223,9 @@ class ImagelistController extends ActionController
         if($frontendUser->getUserId() && $frontendUser->getUserId() > 0) {
             $userGroups = GeneralUtility::intExplode(',', $frontendUser->user['usergroup'], true);
             $possibleGroups = GeneralUtility::intExplode(',', $feGroups, true);
-            if(\count($possibleGroups) > 0) {
-                foreach($possibleGroups as $group) {
-                    if(in_array($group, $userGroups, true)) {
-                        return true;
-                    }
+            foreach($possibleGroups as $group) {
+                if(in_array($group, $userGroups, true)) {
+                    return true;
                 }
             }
         }

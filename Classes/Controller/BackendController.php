@@ -10,8 +10,8 @@ use TYPO3\CMS\Backend\Module\ModuleData;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -19,46 +19,18 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 class BackendController extends ActionController
 {
-    protected ?o4vRepository $o4vRepository = null;
-    protected ?FileReferenceRepository $fileReferenceRepository = null;
-    protected ?LicencesRepository $licencesRepository = null;
     protected ?ModuleData $moduleData = null;
     protected ModuleTemplate $moduleTemplate;
-    protected ModuleTemplateFactory $moduleTemplateFactory;
-    protected IconFactory $iconFactory;
-    protected PageRenderer $pageRenderer;
 
-    /**
-     * @var array
-     */
-    protected $settings = [];
-
-    public function injectModuleTemplateFactory(ModuleTemplateFactory $moduleTemplateFactory): void
-    {
-        $this->moduleTemplateFactory = $moduleTemplateFactory;
-    }
-
-    public function injectIconFactory(IconFactory $iconFactory): void
-    {
-        $this->iconFactory = $iconFactory;
-    }
-
-    public function injectPageRenderer(PageRenderer $pageRenderer): void
-    {
-        $this->pageRenderer = $pageRenderer;
-    }
-
-    public function injectO4vRepository(o4vRepository $o4vRepository): void {
-        $this->o4vRepository = $o4vRepository;
-    }
-
-    public function injectFileReferenceRepository(FileReferenceRepository $fileReferenceRepository): void {
-        $this->fileReferenceRepository = $fileReferenceRepository;
-    }
-
-    public function injectLicenceRepository(LicencesRepository $licencesRepository): void {
-        $this->licencesRepository = $licencesRepository;
-    }
+    protected array $settings = [];
+    public function __construct(
+        protected ModuleTemplateFactory $moduleTemplateFactory,
+        protected IconFactory $iconFactory,
+        protected PageRenderer $pageRenderer,
+        protected ?o4vRepository $o4vRepository,
+        protected ?FileReferenceRepository $fileReferenceRepository,
+        protected ?LicencesRepository $licencesRepository
+    ) { }
 
     public function initializeAction(): void
     {
@@ -199,12 +171,12 @@ class BackendController extends ActionController
             ->setHref($linkUrl)
             ->setTitle('Übersicht aller Dateien (mit Referenzangaben)')
             ->setShowLabelText('Link zur Übersicht')
-            ->setIcon($this->iconFactory->getIcon('actions-list', Icon::SIZE_SMALL));
+            ->setIcon($this->iconFactory->getIcon('actions-list', IconSize::SMALL));
         $licenceBtn = $buttonBar->makeLinkButton()
             ->setHref($licenceUrl)
             ->setTitle('Bild-Lizenzen')
             ->setShowLabelText('Bild-Lizenzen')
-            ->setIcon($this->iconFactory->getIcon('actions-certificate-alternative', Icon::SIZE_SMALL));
+            ->setIcon($this->iconFactory->getIcon('actions-certificate-alternative', IconSize::SMALL));
         $buttonBar->addButton($listBtn, ButtonBar::BUTTON_POSITION_LEFT, 1);
         $buttonBar->addButton($licenceBtn, ButtonBar::BUTTON_POSITION_LEFT, 2);
     }

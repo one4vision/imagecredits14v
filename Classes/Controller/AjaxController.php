@@ -1,39 +1,31 @@
 <?php
 namespace Extension14v\Imagecredits14v\Controller;
 
+use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Extension14v\Imagecredits14v\Domain\Repository\AjaxRepository;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
-class AjaxController extends ActionController
+#[Autoconfigure(public: true)]
+class AjaxController
 {
-
-    protected ?AjaxRepository $ajaxRepository = null;
-
     protected array $responseArray = [];
 
-    /**
-     * @var array
-     */
-    protected $settings = [];
+    protected array $settings = [];
 
-    public function injectAjaxRepository(AjaxRepository $ajaxRepository): void
-    {
-        $this->ajaxRepository = $ajaxRepository;
-    }
-
-    public function __invoke(): ResponseInterface {
-        $this->ajaxRepository = GeneralUtility::makeInstance(AjaxRepository::class);
-        $action = trim((string) $_REQUEST['action']);
+    public function updateCopyrightAction(ServerRequestInterface $request): ResponseInterface {
+        $query = $request->getParsedBody();
+        $action = trim((string) $query['action']);
         $result = [];
         $result['action'] = $action;
         if($action === 'saveChanges') {
-            $value = trim((string) $_REQUEST['value']);
-            $name = trim((string) $_REQUEST['name']);
-            $metaUid = (int) $_REQUEST['metaUid'];
-            $content = $this->ajaxRepository->saveMetaDataValue($metaUid, $name, $value);
+            $value = trim((string) $query['value']);
+            $name = trim((string) $query['name']);
+            $metaUid = (int) $query['metaUid'];
+            $content = $this->saveMetaDataValue($metaUid, $name, $value);
             $result['done'] = $content;
             $result['metaUid'] = $metaUid;
             $result['name'] = $name;
@@ -41,5 +33,17 @@ class AjaxController extends ActionController
             $this->responseArray['message'] = $result;
         }
         return new JsonResponse($this->responseArray);
+    }
+
+    private function saveMetaDataValue(int $metaUid, string $fieldName, $fieldValue): bool
+    {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $table = 'sys_file_metadata';
+        $queryBuilder = $connectionPool->getQueryBuilderForTable($table);
+        $queryBuilder->update($table)
+            ->where($queryBuilder->expr()->eq('uid', $metaUid))->set($fieldName, $fieldValue)->executeStatement();
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $persistenceManager->persistAll();
+        return true;
     }
 }

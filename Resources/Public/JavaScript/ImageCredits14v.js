@@ -44,59 +44,60 @@ function checkExtension(metaUid, fieldId, fileExtension, controlButton) {
     }
 }
 
-function saveChanges(metaUid, fieldId, controlButton)
-{
-    let ajaxUrl = 'index.php?eID=changecopyrightinformation';
-    let fieldRowId = document.getElementById('f'+fieldId+'_'+metaUid);
-    let parentNode = fieldRowId.parentNode;
-    let fieldValue = fieldRowId.value;
-    let fieldName = fieldRowId.dataset['field'];
-    fieldValue.trim();
+function saveChanges(metaUid, fieldId, controlButton) {
+    const fieldRowId = document.getElementById(`f${fieldId}_${metaUid}`);
+    if (!fieldRowId) {
+        console.error('Feld nicht gefunden:', `f${fieldId}_${metaUid}`);
+        return;
+    }
 
-    let $controlButton = document.querySelector('.controlButton');
-    $controlButton.classList.remove('btn-success');
-    $controlButton.classList.add('btn-primary');
+    const parentNode = fieldRowId.parentNode;
+    const fieldValue = fieldRowId.value.trim();
+    const fieldName = fieldRowId.dataset.field;
 
-    let loader = document.createElement('span');
-    loader.classList.add('ic14v-loader');
-    parentNode.appendChild(loader);
+    controlButton.classList.remove('btn-success');
+    controlButton.classList.add('btn-primary');
 
-    let $parameters = [];
-    $parameters['action'] = 'saveChanges';
-    $parameters['metaUid'] = metaUid;
-    $parameters['name'] = fieldName;
-    $parameters['value'] = fieldValue;
+    let loader = parentNode.querySelector('.ic14v-loader');
+    if (!loader) {
+        loader = document.createElement('span');
+        loader.className = 'ic14v-loader';
+        parentNode.appendChild(loader);
+    }
 
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', ajaxUrl, true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function() {
-        if(xhr.readyState === 4 && xhr.status === 200) {
-            let InData = JSON.parse(xhr.responseText);
-            let result = InData['message'];
-            if(result['done'] === true) {
+    const params = new URLSearchParams({
+        action: 'saveChanges',
+        metaUid: String(metaUid),
+        name: fieldName,
+        value: fieldValue
+    });
+
+    fetch('/index.php?eID=imagecredits_update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString()
+    })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            if (data?.message?.done) {
                 controlButton.classList.remove('btn-primary');
                 controlButton.classList.add('btn-success');
-                setTimeout(function() {
-                    controlButton.classList.add('btn-primary');
+                setTimeout(() => {
                     controlButton.classList.remove('btn-success');
+                    controlButton.classList.add('btn-primary');
                     loader.remove();
                 }, 2000);
-                if(fieldValue === '') {
-                    parentNode.classList.add('has-error');
-                } else {
-                    parentNode.classList.remove('has-error');
-                }
+                parentNode.classList.toggle('has-error', fieldValue === '');
+            } else {
+                throw new Error('Server-Antwort ungültig');
             }
-        } else {
-            console.log(ajaxUrl, parameters);
-            console.log(xhr);
-            alert('An error occurred');
-        }
-    };
-    let query = [];
-    for(let key in $parameters) {
-        query.push(encodeURIComponent(key)+'='+encodeURIComponent($parameters[key]));
-    }
-    xhr.send(query.join('&'));
+        })
+        .catch(error => {
+            console.error('AJAX Fehler:', error);
+            alert('Fehler beim Speichern. Bitte erneut versuchen.');
+            loader.remove();
+        });
 }
